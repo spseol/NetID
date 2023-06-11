@@ -1,24 +1,28 @@
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, send_from_directory, request
 from datetime import datetime
 import locale
+from flask_cors import CORS
 
 # from werkzeug.security import generate_password_hash, check_password_hash
 locale.setlocale(locale.LC_ALL, "cs_CZ.utf8")
 
 app = Flask(__name__)
+CORS(app)
 app.secret_key = (
     b'\xf4\xcf\xed\xbc\x06sE6+"\x06\x84\x00\x99S\xb4\xd2\xa1\x80\x98\x86\x195\xdf'
 )
 
 
 class NetID:
-    def __init__(self, ID):
+    def __init__(self, ID, IP):
         self.ID = ID
         self.ctime = datetime.now()  # create/change time
         self.atime = datetime.now()  # access time
+        self.ip = {IP}
 
-    def get(self):
+    def get(self, IP):
         self.atime = datetime.now()  # access time
+        self.ip.add(IP)
         return self.ID
 
     def __str__(self):
@@ -40,7 +44,7 @@ class Nicks(dict):
         + list(range(930, 1000))
     )
 
-    def get(self, nick):
+    def get(self, nick, IP):
         if nick not in self:
             # Pokud je volné ID použiju ho
             if len(self.IDs) > 0:
@@ -54,8 +58,8 @@ class Nicks(dict):
                 # print("old:", old)
                 ID = self[old].ID
                 self.pop(old)
-            self[nick] = NetID(ID)
-        r = self[nick].get()
+            self[nick] = NetID(ID, IP)
+        r = self[nick].get(IP)
         # for nick in self:
         #     print(f"{nick}: Create at {self[nick].ctime}. Use at {self[nick].atime}.")
         return r
@@ -68,7 +72,7 @@ def index():
 
 @app.route("/get/<nick>")
 def text(nick):
-    return str(nicks.get(nick))
+    return str(nicks.get(nick, request.remote_addr))
 
 
 @app.route("/status")
@@ -81,6 +85,8 @@ def status():
         netid["atime"] = nicks[nick].atime.strftime("%c")
         netid["atime_diff"] = (datetime.now() - nicks[nick].atime).seconds
         netid["ctime_diff"] = (datetime.now() - nicks[nick].ctime).seconds
+        netid["addresses"] = list(nicks[nick].ip)
+        # netid["addresses"] = [1, 2, 3]
         s[nick] = netid
     return jsonify(s)
 
