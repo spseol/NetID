@@ -77,17 +77,21 @@ def text(nick):
 
 @app.route("/status")
 def status():
-    s = {}
-    for nick in nicks:
+    s = []
+    print(sorted(nicks.keys()))
+    for nick in sorted(nicks.keys()):
         netid = {}
+        netid["nick"] = nick
         netid["id"] = nicks[nick].ID
         netid["ctime"] = nicks[nick].ctime.strftime("%c")
+        netid["ctime_stamp"] = nicks[nick].ctime.strftime("%s")
         netid["atime"] = nicks[nick].atime.strftime("%c")
+        netid["atime_stamp"] = nicks[nick].atime.strftime("%s")
         netid["atime_diff"] = (datetime.now() - nicks[nick].atime).seconds
         netid["ctime_diff"] = (datetime.now() - nicks[nick].ctime).seconds
         netid["addresses"] = list(nicks[nick].ip)
         # netid["addresses"] = [1, 2, 3]
-        s[nick] = netid
+        s.append(netid)
     return jsonify(s)
 
 

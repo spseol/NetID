@@ -4,11 +4,13 @@ import 'ofetch';
 import 'hookable';
 import 'unctx';
 import 'h3';
-import 'ufo';
 import '@unhead/ssr';
 import 'unhead';
 import '@unhead/shared';
+import 'vue-router';
+import 'ufo';
 import 'vue/server-renderer';
+import 'defu';
 import '../../nitro/node-server.mjs';
 import 'node-fetch-native/polyfill';
 import 'node:http';
@@ -17,7 +19,6 @@ import 'destr';
 import 'unenv/runtime/fetch/index';
 import 'scule';
 import 'klona';
-import 'defu';
 import 'ohash';
 import 'unstorage';
 import 'radix3';
@@ -50,4 +51,4 @@ const islandRenderer = /* @__PURE__ */ defineComponent({
 });
 
 export { islandRenderer as default };
-//# sourceMappingURL=island-renderer-c85e3d29.mjs.map
+//# sourceMappingURL=island-renderer-be0ec920.mjs.map

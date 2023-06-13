@@ -10,6 +10,7 @@
     "@vue/compiler-core": "3.3.4",
     "@vue/compiler-dom": "3.3.4",
     "@vue/compiler-ssr": "3.3.4",
+    "@vue/devtools-api": "6.5.0",
     "@vue/reactivity": "3.3.4",
     "@vue/runtime-core": "3.3.4",
     "@vue/runtime-dom": "3.3.4",
@@ -41,6 +42,7 @@
     "unhead": "1.1.27",
     "unstorage": "1.6.1",
     "vue": "3.3.4",
-    "vue-bundle-renderer": "1.0.3"
+    "vue-bundle-renderer": "1.0.3",
+    "vue-router": "4.2.2"
   }
 }

@@ -1,26 +1,3 @@
-<template>
-  <div id="top">
-  <header>
-    <nav>
-      <ul>
-        <li><NuxtLink to="/">Home</NuxtLink></li>
-        <li><NuxtLink to="/about">About</NuxtLink></li>
-      </ul>
-    </nav>
-    
-    
-    <h1><NuxtLink to="/"><img src="/img/netid.png" alt=""> NetID</NuxtLink></h1>
-
-  </header>
-
-  <main>
-    <NuxtPage />
-  </main>
-
-  </div>
-</template>
-
-
 <style lang="scss">
 
 body {
@@ -81,5 +58,28 @@ header {
 
 
 </style>
+
+<template>
+  <div id="top">
+  <header>
+    <nav>
+      <ul>
+        <li><NuxtLink to="/">Table</NuxtLink></li>
+        <li><NuxtLink to="/about">About</NuxtLink></li>
+      </ul>
+    </nav>
+    
+    
+    <h1><NuxtLink to="/"><img src="/img/netid.png" alt=""> NetID</NuxtLink></h1>
+
+  </header>
+
+  <main>
+    <NuxtPage />
+  </main>
+
+  </div>
+</template>
+
 
 
