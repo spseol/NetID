@@ -1,6 +1,3 @@
 {
-  "extends": "../.nuxt/tsconfig.server.json",
-  "compilerOptions": {
-      "whitespace": "preserve"
-  }
+  "extends": "../.nuxt/tsconfig.server.json"
 }
