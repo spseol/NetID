@@ -51,6 +51,11 @@ table {
 
   <h2>Table of nicks</h2>
 
+  <pre>
+    pending: {{ loadedData.pending }}
+    err: {{ loadedData.error }}
+  </pre>
+
     <table>
       <thead>
         <tr>
@@ -130,13 +135,21 @@ const sorting= reactive({
 })
 
 // data
-const { data: table } = await useFetch('http://localhost:54321/status');
+// const { data: table } = await useFetch('http://localhost:54321/status');
 //table.value = bagr.value
 //console.log(table.value)
 /*const response = await useFetch('http://localhost:54321/status');*/
 /*console.log(response)*/
 
+
+const loadedData = useFetch('http://127.0.0.1:5000/status');
+
 const table2 = computed( () => {
+  const table = loadedData.data
+
+  if (loadedData.data.value == null)
+    return [];
+
   let tab = [];
 
   const nick_re = nick.value == '' ? new RegExp(/.*/) : new RegExp(nick.value,"i");
@@ -260,7 +273,8 @@ const refreshing = ref(false)
 const refreshAll = async () => {
   refreshing.value = true
   try {
-    await refreshNuxtData()
+      await loadedData.refresh()
+    // await refreshNuxtData()
   }
   finally {
     refreshing.value = false
