@@ -53,51 +53,55 @@ table {
 
     <table>
       <thead>
-        <th>
-          <a href="#" id="nick_down" :class="[sorting,{active: sorting.nick_down}]"
-             @click.prevent="chsort"> 🠛 </a>
-          <a href="#" id="nick_up" :class="[sorting,{active: sorting.nick_up}]"
-             @click.prevent="chsort"> 🠙 </a>
-          <a href="#" @click.prevent="sort_switch">Nick </a> 
-          <input v-model="nick" type="text" placeholder="filter"></th>
-        <th>
-          <a href="#" id="addr_down" :class="{active: sorting.addr_down}"
-             @click.prevent="chsort"> 🠛 </a>
-          <a href="#" id="addr_up" :class="{active: sorting.addr_up}"
-             @click.prevent="chsort"> 🠙 </a>
-          <a href="#" @click.prevent="sort_switch">Addreses </a>
-          <input v-model="address" type="text" placeholder="filter"></th>
-        <th>
-          <a href="#" id="age_down" :class="{active: sorting.age_down}"
-             @click.prevent="chsort"> 🠛 </a>
-          <a href="#" id="age_up" :class="{active: sorting.age_up}"
-             @click.prevent="chsort"> 🠙 </a>
-          <a href="#" @click.prevent="sort_switch">Age</a>
-        </th>
-        <th>
-          <a href="#" id="create_down" :class="{active: sorting.create_down}"
-             @click.prevent="chsort"> 🠛 </a>
-          <a href="#" id="create_up" :class="{active: sorting.create_up}"
-             @click.prevent="chsort"> 🠙 </a>
-          Create
-        </th>
+        <tr>
+          <th>
+            <a href="#" id="nick_down" :class="[sorting,{active: sorting.nick_down}]"
+              @click.prevent="chsort"> 🠛 </a>
+            <a href="#" id="nick_up" :class="[sorting,{active: sorting.nick_up}]"
+              @click.prevent="chsort"> 🠙 </a>
+            <a href="#" @click.prevent="sort_switch">Nick </a> 
+            <input v-model="nick" type="text" placeholder="filter"></th>
+          <th>
+            <a href="#" id="addr_down" :class="{active: sorting.addr_down}"
+              @click.prevent="chsort"> 🠛 </a>
+            <a href="#" id="addr_up" :class="{active: sorting.addr_up}"
+              @click.prevent="chsort"> 🠙 </a>
+            <a href="#" @click.prevent="sort_switch">Addreses </a>
+            <input v-model="address" type="text" placeholder="filter"></th>
+          <th>
+            <a href="#" id="age_down" :class="{active: sorting.age_down}"
+              @click.prevent="chsort"> 🠛 </a>
+            <a href="#" id="age_up" :class="{active: sorting.age_up}"
+              @click.prevent="chsort"> 🠙 </a>
+            <a href="#" @click.prevent="sort_switch">Age</a>
+          </th>
+          <th>
+            <a href="#" id="create_down" :class="{active: sorting.create_down}"
+              @click.prevent="chsort"> 🠛 </a>
+            <a href="#" id="create_up" :class="{active: sorting.create_up}"
+              @click.prevent="chsort"> 🠙 </a>
+            Create
+          </th>
+        </tr>
       </thead>
-      <tr v-for="item in table2" :key="item.nick">
-        <td>{{ item.nick }}</td>
-        <td>
-          <ul>
-            <li v-for="address in item.addresses" :key="address">{{ address }}</li>
-          </ul>
-        </td>
-        <td>
-          <span style="color:#777">{{ item.atime  }}</span><br />
-          {{ timeview(item.atime_diff) }}
-        </td> 
-        <td>
-          <span style="color:#777">{{ item.ctime  }}</span><br />
-          {{ timeview(item.ctime_diff) }}
-        </td>
-      </tr>
+      <tbody>
+        <tr v-for="item in table2" :key="item.nick">
+          <td>{{ item.nick }}</td>
+          <td>
+            <ul>
+              <li v-for="address in item.addresses" :key="address">{{ address }}</li>
+            </ul>
+          </td>
+          <td>
+            <span style="color:#777">{{ item.atime  }}</span><br />
+            {{ timeview(item.atime_diff) }}
+          </td> 
+          <td>
+            <span style="color:#777">{{ item.ctime  }}</span><br />
+            {{ timeview(item.ctime_diff) }}
+          </td>
+        </tr>
+        </tbody>
     </table>
 
 N: {{nick}}
@@ -122,7 +126,10 @@ const sorting= reactive({
 })
 
 // data
+/*const table = ref([]);*/
 const { data: table } = await useFetch('http://localhost:54321/status');
+/*const response = await useFetch('http://localhost:54321/status');*/
+/*console.log(response)*/
 
 const table2 = computed( () => {
   let tab = table.value;
