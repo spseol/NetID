@@ -4,7 +4,7 @@ import locale
 from flask_cors import CORS
 
 # from werkzeug.security import generate_password_hash, check_password_hash
-locale.setlocale(locale.LC_ALL, "cs_CZ.utf8")
+# locale.setlocale(locale.LC_ALL, "cs_CZ.utf8")
 
 app = Flask(__name__)
 CORS(app)
@@ -63,7 +63,6 @@ class Nicks(dict):
         # for nick in self:
         #     print(f"{nick}: Create at {self[nick].ctime}. Use at {self[nick].atime}.")
         return r
-
 
 @app.route("/", methods=["GET"])
 def index():
