@@ -78,7 +78,7 @@ def text(nick):
 @app.route("/status")
 def status():
     s = []
-    print(sorted(nicks.keys()))
+    # print(sorted(nicks.keys()))
     for nick in sorted(nicks.keys()):
         netid = {}
         netid["nick"] = nick

@@ -11,6 +11,5 @@ export default defineNuxtConfig({
                 lang: 'cs,en'
             }
         }
-    },
-
+    }
 })

@@ -59,34 +59,40 @@ table {
               @click.prevent="chsort"> 🠛 </a>
             <a href="#" id="nick_up" :class="[sorting,{active: sorting.nick_up}]"
               @click.prevent="chsort"> 🠙 </a>
-            <a href="#" @click.prevent="sort_switch">Nick </a> 
-            <input v-model="nick" type="text" placeholder="filter"></th>
-          <th>
-            <a href="#" id="addr_down" :class="{active: sorting.addr_down}"
-              @click.prevent="chsort"> 🠛 </a>
-            <a href="#" id="addr_up" :class="{active: sorting.addr_up}"
-              @click.prevent="chsort"> 🠙 </a>
-            <a href="#" @click.prevent="sort_switch">Addreses </a>
-            <input v-model="address" type="text" placeholder="filter"></th>
-          <th>
-            <a href="#" id="age_down" :class="{active: sorting.age_down}"
-              @click.prevent="chsort"> 🠛 </a>
-            <a href="#" id="age_up" :class="{active: sorting.age_up}"
-              @click.prevent="chsort"> 🠙 </a>
-            <a href="#" @click.prevent="sort_switch">Age</a>
-          </th>
-          <th>
-            <a href="#" id="create_down" :class="{active: sorting.create_down}"
-              @click.prevent="chsort"> 🠛 </a>
-            <a href="#" id="create_up" :class="{active: sorting.create_up}"
-              @click.prevent="chsort"> 🠙 </a>
-            Create
+          <a href="#" @click.prevent="swsort('nick')">Nick </a> 
+          <input v-model="nick" type="text" placeholder="filter">
+        </th>
+        <th>
+          ID
+        </th>
+        <th>
+          <a href="#" id="addr_down" :class="{active: sorting.addr_down}"
+             @click.prevent="chsort"> 🠛 </a>
+          <a href="#" id="addr_up" :class="{active: sorting.addr_up}"
+             @click.prevent="chsort"> 🠙 </a>
+          <a href="#" @click.prevent="swsort('addr')">Addresses </a>
+          <input v-model="address" type="text" placeholder="filter">
+        </th>
+        <th>
+          <a href="#" id="age_down" :class="{active: sorting.age_down}"
+             @click.prevent="chsort"> 🠛 </a>
+          <a href="#" id="age_up" :class="{active: sorting.age_up}"
+             @click.prevent="chsort"> 🠙 </a>
+          <a href="#" @click.prevent="swsort('age')">Age</a>
+        </th>
+        <th>
+          <a href="#" id="create_down" :class="{active: sorting.create_down}"
+             @click.prevent="chsort"> 🠛 </a>
+          <a href="#" id="create_up" :class="{active: sorting.create_up}"
+             @click.prevent="chsort"> 🠙 </a>
+          <a href="#" @click.prevent="swsort('create')">Create</a>
           </th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="item in table2" :key="item.nick">
           <td>{{ item.nick }}</td>
+          <td>{{ item.id }}</td>
           <td>
             <ul>
               <li v-for="address in item.addresses" :key="address">{{ address }}</li>
@@ -101,11 +107,8 @@ table {
             {{ timeview(item.ctime_diff) }}
           </td>
         </tr>
-        </tbody>
+      </tbody>
     </table>
-
-N: {{nick}}
-A: {{address}}
 
 </div></template>
 
@@ -114,6 +117,7 @@ A: {{address}}
 
 const nick = ref('');
 const address = ref('');
+//const table =ref([]);
 const sorting= reactive({
   nick_up: false,
   nick_down: false,
@@ -126,13 +130,28 @@ const sorting= reactive({
 })
 
 // data
-/*const table = ref([]);*/
 const { data: table } = await useFetch('http://localhost:54321/status');
+//table.value = bagr.value
+//console.log(table.value)
 /*const response = await useFetch('http://localhost:54321/status');*/
 /*console.log(response)*/
 
 const table2 = computed( () => {
-  let tab = table.value;
+  let tab = [];
+
+  const nick_re = nick.value == '' ? new RegExp(/.*/) : new RegExp(nick.value,"i");
+  const address_re = address.value == '' ? new RegExp(/.*/) : new RegExp(address.value,"i");
+
+  //let tab = table.value;
+  for (let i = 0; i < table.value.length; i++) {
+    const item = table.value[i];
+    if (nick_re.test(item.nick) && address_re.test(item.addresses.join(' '))) {
+      tab.push(item)
+    }
+    
+  }
+
+
 
   // sorting IP addresses
   for (let i=0; i< tab.length; i++) {
@@ -251,16 +270,34 @@ const refreshAll = async () => {
 setInterval(refreshAll, 7777);
 
 
-/* ---------------------------------------------------------------------- */
-
 function chsort(event) {
-    for (let key in  sorting) {
-      if (key == event.target.id) {
-        sorting[key] = true;
-      } else {
-        sorting[key] = false;
-      }
+  for (let key in  sorting) {
+    if (key == event.target.id) {
+      sorting[key] = true;
+    } else {
+      sorting[key] = false;
     }
+  }
+}
+
+function swsort(click) {
+  let state = ''
+
+  for (let key in  sorting) {
+    if (sorting[key]) {
+      state = key;    // zapamatuji si aktuální stav
+    }
+  }
+  if (state.includes(click))  {
+    // pokud kliknu na to co se používá
+    sorting[click+'_up'] = !  sorting[click+'_up'];
+    sorting[click+'_down'] = ! sorting[click+'_down'];
+  } else {
+    // pokud kliknu na něco jiného
+    sorting[state] = false;
+    sorting[click+'_down'] = true;
+  }
+
 }
 
 
