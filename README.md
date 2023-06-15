@@ -2,8 +2,10 @@ NetID
 =========
 
 Toto je miniprojekt pro můj školní [lab](https://github.com/spseol/udelatka).
-[backend](../backend) slouží pro převod jména (nick) sítě na ID (číslo) sítě.
-[frontend](../frontend) slouží jako kukátko na jednotlivá jména, jejich ID
+
+[backend](https://github.com/spseol/NetID/tree/main/backend) slouží pro převod jména (nick) sítě na ID (číslo) sítě.
+
+[frontend](https://github.com/spseol/NetID/tree/main/frontend) slouží jako kukátko na jednotlivá jména, jejich ID
 a jejich stáří. Mě to posloužilo jako projekt na kterém se učím
 [Nuxt](https://nuxt.com/).
 
