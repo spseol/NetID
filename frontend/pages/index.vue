@@ -46,19 +46,28 @@ table {
 <template><div>
 
   <div id="refresh">
-    <button :disabled="refreshing" @click="refreshAll">Refetch</button>
+    <button :disabled="refreshing" @click="refreshClick">Refetch</button>
   </div>
 
-  <h2>Table of nicks</h2>
+  <h2>Table of nicks
+    <img v-if="loadedData.pending.value" src="/img/load.gif"  style="height: 0.88em;"/>
+  </h2>
 
-    <table>
+
+    <div v-if="err">
+      <h3>Data se nepodařilo načíst! Sorry</h3>
+      <p> {{ loadedData.error }} </p>
+      <img src="/img/error.jpg" alt="Sorry Error" style="width:100%">
+    </div>
+
+    <table v-else>
       <thead>
         <tr>
           <th>
             <a href="#" id="nick_down" :class="[sorting,{active: sorting.nick_down}]"
-              @click.prevent="chsort"> 🠛 </a>
+              @click.prevent="chsort">🠛</a>
             <a href="#" id="nick_up" :class="[sorting,{active: sorting.nick_up}]"
-              @click.prevent="chsort"> 🠙 </a>
+              @click.prevent="chsort">🠙</a>
           <a href="#" @click.prevent="swsort('nick')">Nick </a> 
           <input v-model="nick" type="text" placeholder="filter">
         </th>
@@ -114,10 +123,11 @@ table {
 
 
 <script setup>
+const refreshInterval = 7777
 
 const nick = ref('');
 const address = ref('');
-//const table =ref([]);
+const err = ref(false);
 const sorting= reactive({
   nick_up: false,
   nick_down: false,
@@ -130,19 +140,29 @@ const sorting= reactive({
 })
 
 // data
-const { data: table } = await useFetch('http://localhost:54321/status');
-//table.value = bagr.value
-//console.log(table.value)
-/*const response = await useFetch('http://localhost:54321/status');*/
-/*console.log(response)*/
+const loadedData = useFetch('http://localhost:54321/api/status');
+
+
+onMounted( () => {
+  setTimeout( refreshAuto, 100);
+  console.log(`the component is now mounted.`)
+})
 
 const table2 = computed( () => {
-  let tab = [];
+  const table = loadedData.data
 
+  if (loadedData.data.value == null ) {
+    err.value = true;
+    return [];
+  } else {
+    err.value = false;
+  }
+  
+
+  let tab = [];
   const nick_re = nick.value == '' ? new RegExp(/.*/) : new RegExp(nick.value,"i");
   const address_re = address.value == '' ? new RegExp(/.*/) : new RegExp(address.value,"i");
 
-  //let tab = table.value;
   for (let i = 0; i < table.value.length; i++) {
     const item = table.value[i];
     if (nick_re.test(item.nick) && address_re.test(item.addresses.join(' '))) {
@@ -255,19 +275,31 @@ const table2 = computed( () => {
 })
 
 
+let intervalID  = setInterval(refreshAuto, refreshInterval);
 // refreshing
 const refreshing = ref(false)
-const refreshAll = async () => {
+async function refreshAuto() {
   refreshing.value = true
   try {
-    await refreshNuxtData()
+    await loadedData.refresh()
+    if (loadedData.data.value == null ) {
+      err.value = true;
+    } else {
+      err.value = false;
+    }
+
   }
   finally {
     refreshing.value = false
   }
 }
 
-setInterval(refreshAll, 7777);
+function refreshClick(e) {
+  clearInterval(intervalID)
+  refreshAuto();
+  intervalID  = setInterval(refreshAuto, refreshInterval);
+}
+
 
 
 function chsort(event) {

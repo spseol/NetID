@@ -65,6 +65,7 @@ header {
     <nav>
       <ul>
         <li><NuxtLink to="/">Table</NuxtLink></li>
+        <li><NuxtLink to="/clear">Clear</NuxtLink></li>
         <li><NuxtLink to="/about">About</NuxtLink></li>
       </ul>
     </nav>

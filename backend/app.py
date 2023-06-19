@@ -1,7 +1,11 @@
-from flask import Flask, jsonify, send_from_directory, request
+from flask import Flask, jsonify, send_from_directory, request, send_from_directory
 from datetime import datetime
 import locale
 from flask_cors import CORS
+import json
+import config
+
+# import time
 
 # from werkzeug.security import generate_password_hash, check_password_hash
 locale.setlocale(locale.LC_ALL, "cs_CZ.utf8")
@@ -64,18 +68,38 @@ class Nicks(dict):
         #     print(f"{nick}: Create at {self[nick].ctime}. Use at {self[nick].atime}.")
         return r
 
+    def clear(self):
+        for key in list(self.keys()):
+            self.IDs.append(self.pop(key).ID)
+
 
 @app.route("/", methods=["GET"])
 def index():
-    return send_from_directory(".", "index.html")
+    return send_from_directory("public", "index.html")
 
 
-@app.route("/get/<nick>")
+@app.route("/<path:path>", methods=["GET"])
+def nuxt(path):
+    return send_from_directory("public", path)
+
+
+@app.route("/api/get/<nick>")
 def text(nick):
     return str(nicks.get(nick, request.remote_addr))
 
 
-@app.route("/status")
+@app.route("/api/clear", methods=["POST"])
+def clear():
+    data = json.loads(request.data)
+    if data["token"] == config.token:
+        nicks.clear()
+        response = {"success": True}
+    else:
+        response = {"success": False}
+    return jsonify(response)
+
+
+@app.route("/api/status")
 def status():
     s = []
     # print(sorted(nicks.keys()))
@@ -92,6 +116,7 @@ def status():
         netid["addresses"] = list(nicks[nick].ip)
         # netid["addresses"] = [1, 2, 3]
         s.append(netid)
+        # time.sleep(1)
     return jsonify(s)
 
 
